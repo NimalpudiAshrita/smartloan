@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartLoan 360 | Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="login-page">
+    <main class="auth-shell">
+        <section class="auth-card">
+            <p class="kicker">AI Loan Intelligence</p>
+            <h1>SmartLoan 360</h1>
+            <p class="subtitle">Secure sign-in for loan underwriting and bank offer matching.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-wrap">
+                    {% for category, message in messages %}
+                        <p class="flash flash-{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+
+            <form method="post" class="auth-form" autocomplete="off">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" placeholder="admin" required />
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" placeholder="Enter password" required />
+
+                <button type="submit">Enter Platform</button>
+            </form>
+
+            <p class="demo-help">Demo: <code>admin</code> / <code>smartloan360</code></p>
+        </section>
+    </main>
+</body>
+</html>

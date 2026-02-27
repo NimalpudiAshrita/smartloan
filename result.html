@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartLoan 360 | Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="result-page">
+    <header class="topbar">
+        <div>
+            <p class="kicker">Loan Decision Output</p>
+            <h1>Marketplace Recommendation</h1>
+        </div>
+        <div class="topbar-right">
+            <a href="{{ url_for('dashboard') }}" class="link-btn">New Analysis</a>
+            <a href="{{ url_for('logout') }}" class="link-btn">Logout</a>
+        </div>
+    </header>
+
+    <main class="result-shell">
+        <section class="status-card">
+            <h2 class="status {{ status|lower }}">{{ status }}</h2>
+            <p>Confidence: <strong>{{ confidence }}%</strong></p>
+            <p>Risk: <strong>{{ risk_label }}</strong> (score {{ risk_score }})</p>
+            <p>Generated: {{ profile.generated_at }}</p>
+        </section>
+
+        <section class="summary-card">
+            <h3>Profile Snapshot</h3>
+            <p><strong>{{ profile.full_name }}</strong> | {{ profile.loan_type }} | {{ profile.tenure_months }} months</p>
+            <p>Monthly Income: INR {{ "{:,}".format(profile.monthly_income|int) }}</p>
+            <p>Loan Amount: INR {{ "{:,}".format(profile.loan_amount|int) }}</p>
+            <p>Disposable Income: INR {{ "{:,}".format(profile.disposable_income|int) }}</p>
+            <p>FOIR: {{ "%.1f"|format(profile.foir*100) }}%</p>
+        </section>
+
+        <section class="explain-card">
+            <h3>Why This Decision</h3>
+            <ul>
+                {% for item in reasons %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+                {% for item in cautions %}
+                    <li class="caution">{{ item }}</li>
+                {% endfor %}
+                {% if not reasons and not cautions %}
+                    <li>Profile was evaluated using baseline financial and credit thresholds.</li>
+                {% endif %}
+            </ul>
+        </section>
+
+        <section class="offers-card">
+            <h3>Recommended Bank Offers</h3>
+            {% if offers %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bank</th>
+                            <th>Interest</th>
+                            <th>EMI</th>
+                            <th>Total Payable</th>
+                            <th>Approval Odds</th>
+                            <th>FOIR</th>
+                            <th>Tag</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for offer in offers %}
+                        <tr {% if best_offer and best_offer.bank == offer.bank and best_offer.rate == offer.rate %}class="best"{% endif %}>
+                            <td>{{ offer.bank }}</td>
+                            <td>{{ offer.rate }}%</td>
+                            <td>INR {{ "{:,}".format(offer.emi) }}</td>
+                            <td>INR {{ "{:,}".format(offer.total_payable) }}</td>
+                            <td>{{ offer.approval }}%</td>
+                            <td>{{ offer.foir }}%</td>
+                            <td>{{ offer.tag }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if best_offer %}
+                <p class="best-note">Best recommendation: <strong>{{ best_offer.bank }}</strong> at <strong>{{ best_offer.rate }}%</strong> with EMI <strong>INR {{ "{:,}".format(best_offer.emi) }}</strong>.</p>
+            {% endif %}
+            {% else %}
+                <p>No eligible bank offers based on current profile. Try reducing loan amount, increasing tenure, or improving credit score.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

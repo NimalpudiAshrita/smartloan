@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartLoan 360 | Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="dashboard-page">
+    <header class="topbar">
+        <div>
+            <p class="kicker">SmartLoan 360 Workspace</p>
+            <h1>Financial Profile Builder</h1>
+        </div>
+        <div class="topbar-right">
+            <p>Welcome, <strong>{{ user_name }}</strong></p>
+            <a href="{{ url_for('logout') }}" class="link-btn">Logout</a>
+        </div>
+    </header>
+
+    <main class="dashboard-shell">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-wrap">
+                {% for category, message in messages %}
+                    <p class="flash flash-{{ category }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+        <section class="profile-card">
+            <h2>Applicant Details</h2>
+            <form method="post" id="profileForm" class="profile-grid">
+                <label>Full Name
+                    <input type="text" name="full_name" placeholder="John Doe" required />
+                </label>
+                <label>Age
+                    <input type="number" name="age" min="21" max="65" required />
+                </label>
+                <label>Employment Type
+                    <select name="employment" required>
+                        <option value="salaried">Salaried</option>
+                        <option value="self_employed">Self Employed</option>
+                        <option value="freelancer">Freelancer</option>
+                    </select>
+                </label>
+                <label>Loan Type
+                    <select name="loan_type" required>
+                        <option value="Home">Home Loan</option>
+                        <option value="Education">Education Loan</option>
+                        <option value="Personal">Personal Loan</option>
+                        <option value="Business">Business Loan</option>
+                    </select>
+                </label>
+                <label>Monthly Income (INR)
+                    <input type="number" name="monthly_income" min="1000" step="100" required />
+                </label>
+                <label>Monthly Expenses (INR)
+                    <input type="number" name="monthly_expenses" min="0" step="100" required />
+                </label>
+                <label>Existing EMI (INR)
+                    <input type="number" name="existing_emi" min="0" step="100" required />
+                </label>
+                <label>Credit Score
+                    <input type="number" name="credit_score" min="300" max="900" required />
+                </label>
+                <label>Loan Amount Requested (INR)
+                    <input type="number" name="loan_amount" min="10000" step="1000" required />
+                </label>
+                <label>Tenure (Months)
+                    <input type="number" name="tenure_months" min="12" max="360" required />
+                </label>
+
+                <div class="insight-box" id="liveInsights">
+                    <p>Disposable Income: <strong id="dispIncome">INR 0</strong></p>
+                    <p>Estimated EMI (10%): <strong id="estEmi">INR 0</strong></p>
+                </div>
+
+                <button type="submit" class="full">Analyze & Recommend</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
